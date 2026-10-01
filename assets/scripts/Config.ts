@@ -43,7 +43,7 @@ export default class Config extends Singleton<Config>() {
         this._trajectoryColor = color;
     }
 
-    _trajectoryLineWidth: number = 2; // 轨迹线宽
+    _trajectoryLineWidth: number = 4; // 轨迹线宽
     get trajectoryLineWidth(): number {
         return this._trajectoryLineWidth;
     }
@@ -51,4 +51,19 @@ export default class Config extends Singleton<Config>() {
         this._trajectoryLineWidth = width;
     }
 
+    _circleLightColor: Color = color(255, 255, 0, 255); // 圆圈高亮颜色
+    get circleLightColor(): Color {
+        return this._circleLightColor;
+    }
+    set circleLightColor(color: Color) {
+        this._circleLightColor = color;
+    }
+
+    _circleLightWidth: number = 4; // 圆圈高亮线宽
+    get circleLightWidth(): number {
+        return this._circleLightWidth;
+    }
+    set circleLightWidth(width: number) {
+        this._circleLightWidth = width;
+    }
 }

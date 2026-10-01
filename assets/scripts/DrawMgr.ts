@@ -1,7 +1,8 @@
-import { color, Color, Graphics, v2, Vec2 } from "cc";
+import { color, Color, game, Graphics, v2, Vec2 } from "cc";
 import Config from "./Config";
 import { Singleton } from "./Common/Singleton";
 import { Circle } from "./Circle";
+import { emitEvent } from "./Common/EventManager";
 
 export default class DrawMgr extends Singleton<DrawMgr>() {
     _circleGraphics: Graphics = null;
@@ -9,7 +10,7 @@ export default class DrawMgr extends Singleton<DrawMgr>() {
 
     _dt: number = 0;
     _timerId: number = 0;
-    _drawInterval: number = 16; // 绘制间隔，单位毫秒
+    _drawInterval: number = 0; // 绘制间隔，单位毫秒
 
     _trajectoryGraphics: Graphics = null; // 轨迹画笔
     _trajectoryPrePos: Vec2 = v2(0, 0); // 轨迹上一次绘制的点
@@ -59,6 +60,35 @@ export default class DrawMgr extends Singleton<DrawMgr>() {
         this._arrCircle.push(circle);
     }
 
+    getTotalDiameter(): number {
+        let totalRadius: number = 0;
+        this._arrCircle.forEach((circle) => {
+            totalRadius += circle.radius;
+        });
+
+        return totalRadius * 2;
+    }
+
+    removeCircle(circleId: number) {
+        let bFind: boolean = false;
+        for (let i = 0; i < this._arrCircle.length; i++) {
+            if (this._arrCircle[i].circleId === circleId) {
+                this._arrCircle.splice(i, 1);
+                bFind = true;
+                break;
+            }
+        }
+
+        this.stopDraw();
+        this.startDraw();
+
+        emitEvent("Circle_Removed", circleId);
+    }
+
+    getAllCircle(): readonly Circle[] {
+        return this._arrCircle;
+    }
+
     getCircle(id: number): Circle {
         return this._arrCircle.find((circle) => {
             return circle.circleId === id;
@@ -83,10 +113,15 @@ export default class DrawMgr extends Singleton<DrawMgr>() {
         this._trajectoryPrePos = v2(this._trajectoryCurrPos.x, this._trajectoryCurrPos.y);
         this._trajectoryGraphics.moveTo(this._trajectoryPrePos.x, this._trajectoryPrePos.y);
 
+        let interval = this._drawInterval;
+        if (this._drawInterval <= 0) {   
+            const fps: number = Number(game.frameRate);
+            interval = 1000 / fps;
+        }
         this._timerId = setInterval(() => {
             this.draw();
-            this._dt += this._drawInterval / 1000;
-        }, this._drawInterval);
+            this._dt += interval / 1000;
+        }, interval);
     }
 
     stopDraw() {
