@@ -1,0 +1,22 @@
+{
+  "name": "fft_circle",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "uuid": "1a662299-5dd1-478b-8f09-16be09e7b379",
+  "creator": {
+    "version": "3.8.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
+    "typescript-eslint": "^8.71.0"
+  }
+}
